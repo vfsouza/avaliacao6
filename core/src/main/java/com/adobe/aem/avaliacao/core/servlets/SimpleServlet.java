@@ -30,13 +30,17 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
+import static org.apache.sling.api.servlets.ServletResolverConstants.SLING_SERVLET_PATHS;
+
 /**
  * Servlet that writes some sample content into the response. It is mounted for
  * all resources of a specific Sling resource type. The
  * {@link SlingSafeMethodsServlet} shall be used for HTTP methods that are
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
-@Component(service = { Servlet.class })
+@Component(service = { Servlet.class }, property = {
+        SLING_SERVLET_PATHS + "=" + "/bin/product"
+})
 @SlingServletResourceTypes(
         resourceTypes="av/components/page",
         methods=HttpConstants.METHOD_GET,
