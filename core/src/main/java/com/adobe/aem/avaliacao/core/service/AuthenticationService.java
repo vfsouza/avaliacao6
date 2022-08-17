@@ -5,6 +5,6 @@ import org.apache.sling.api.SlingHttpServletResponse;
 
 import java.io.IOException;
 
-public interface ReportService {
-    void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException;
+public interface AuthenticationService {
+    void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException;
 }

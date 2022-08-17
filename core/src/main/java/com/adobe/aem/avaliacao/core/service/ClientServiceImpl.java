@@ -25,13 +25,13 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
         response.setContentType("application/json");
-        if (request.getParameter("number") == null) {
+        if (request.getParameter("id") == null) {
             Collection<Client> clients = clientDao.readAll();
             response.getWriter().write(new Gson().toJson(clients));
         } else {
             try {
-                int number = Integer.parseInt(request.getParameter("number"));
-                Client client = clientDao.readById(number);
+                int id = Integer.parseInt(request.getParameter("id"));
+                Client client = clientDao.readById(id);
                 if (client == null) {
                     response.getWriter().write(new Gson().toJson(new ResponseJSON(400, "No products found")));
                     return;
@@ -59,16 +59,18 @@ public class ClientServiceImpl implements ClientService {
             try {
                 clients = new Gson().fromJson(payloadString, clientListType);
                 clientDao.insertMany(clients);
+                response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Clients successfully registered")));
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                response.getWriter().write(new Gson().toJson(e.getMessage()));
             }
         } else {
             Client client;
             try {
                 client = new Gson().fromJson(payloadString, Client.class);
                 clientDao.insert(client);
+                response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Client successfully registered")));
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                response.getWriter().write(new Gson().toJson(e.getMessage()));
             }
         }
     }
@@ -79,6 +81,7 @@ public class ClientServiceImpl implements ClientService {
         if (request.getParameter("id") != null) {
             try {
                 clientDao.delete(Integer.parseInt(request.getParameter("id")));
+                response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Client successfully deleted")));
             } catch (NumberFormatException ex) {
                 response.getWriter().write(new Gson().toJson(ex));
             }
@@ -98,8 +101,9 @@ public class ClientServiceImpl implements ClientService {
         try {
             client = new Gson().fromJson(payloadString, Client.class);
             clientDao.update(client);
+            response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Client updated successfully")));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            response.getWriter().write(new Gson().toJson(e.getMessage()));
         }
     }
 }

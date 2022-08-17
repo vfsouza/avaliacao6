@@ -35,7 +35,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 int number = Integer.parseInt(request.getParameter("number"));
                 Invoice invoice = invoiceDao.readById(number);
                 if (invoice == null) {
-                    response.getWriter().write(new Gson().toJson(new ResponseJSON(400, "No products found")));
+                    response.getWriter().write(new Gson().toJson(new ResponseJSON(400, "No invoices found")));
                     return;
                 }
                 response.getWriter().write(new Gson().toJson(invoice));
@@ -56,21 +56,23 @@ public class InvoiceServiceImpl implements InvoiceService {
             response.getWriter().write(new Gson().toJson(e));
         }
         if (payloadString.contains("[") || payloadString.contains("]")) {
-            ArrayList<Invoice> clients;
+            ArrayList<Invoice> invoices;
             Type invoiceListType = new TypeToken<ArrayList<Invoice>>(){}.getType();
             try {
-                clients = new Gson().fromJson(payloadString, invoiceListType);
-                invoiceDao.insertMany(clients);
+                invoices = new Gson().fromJson(payloadString, invoiceListType);
+                invoiceDao.insertMany(invoices);
+                response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Invoices successfully registered")));
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                response.getWriter().write(new Gson().toJson(e.getMessage()));
             }
         } else {
             Invoice invoice;
             try {
                 invoice = new Gson().fromJson(payloadString, Invoice.class);
                 invoiceDao.insert(invoice);
+                response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Invoice successfully registered")));
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                response.getWriter().write(new Gson().toJson(e.getMessage()));
             }
         }
     }
@@ -81,6 +83,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (request.getParameter("id") != null) {
             try {
                 invoiceDao.delete(Integer.parseInt(request.getParameter("id")));
+                response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Invoice successfully deleted")));
             } catch (NumberFormatException ex) {
                 response.getWriter().write(new Gson().toJson(ex));
             }
@@ -94,14 +97,15 @@ public class InvoiceServiceImpl implements InvoiceService {
         try {
             payloadString = IOUtils.toString(request.getReader());
         } catch (Exception e) {
-            response.getWriter().write(new Gson().toJson(e));
+            response.getWriter().write(new Gson().toJson(e.getMessage()));
         }
         Invoice invoice;
         try {
             invoice = new Gson().fromJson(payloadString, Invoice.class);
             invoiceDao.update(invoice);
+            response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Invoice successfully updated")));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            response.getWriter().write(new Gson().toJson(e.getMessage()));
         }
     }
 }

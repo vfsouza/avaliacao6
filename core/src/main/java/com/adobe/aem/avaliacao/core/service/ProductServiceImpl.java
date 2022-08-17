@@ -25,22 +25,20 @@ public class ProductServiceImpl implements ProductService {
     public void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         if (request.getParameter("id") == null) {
-            Collection<Product> products = productDao.readAll();
+            ArrayList<Product> products = productDao.readAll(request.getParameter("param"));
             response.getWriter().write(new Gson().toJson(products));
         } else {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
                 Product product = productDao.readById(id);
+                response.getWriter().write(new Gson().toJson(product));
                 if (product == null) {
                     response.getWriter().write(new Gson().toJson(new ResponseJSON(400, "No products found")));
-                    return;
                 }
-                response.getWriter().write(new Gson().toJson(product));
             } catch (NumberFormatException ex) {
                 response.getWriter().write(new Gson().toJson(ex));
             }
         }
-
     }
 
     @Override
@@ -58,16 +56,18 @@ public class ProductServiceImpl implements ProductService {
             try {
                 products = new Gson().fromJson(payloadString, productListType);
                 productDao.insertMany(products);
+                response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Products successfully registered")));
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                response.getWriter().write(new Gson().toJson(e.getMessage()));
             }
         } else {
             Product product;
             try {
                 product = new Gson().fromJson(payloadString, Product.class);
                 productDao.insert(product);
+                response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Product successfully registered")));
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                response.getWriter().write(new Gson().toJson(e.getMessage()));
             }
         }
     }
@@ -77,6 +77,7 @@ public class ProductServiceImpl implements ProductService {
         if (request.getParameter("id") != null) {
             try {
                 productDao.delete(Integer.parseInt(request.getParameter("id")));
+                response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Product successfully deleted")));
             } catch (NumberFormatException ex) {
                 response.getWriter().write(new Gson().toJson(ex));
             }
@@ -90,14 +91,15 @@ public class ProductServiceImpl implements ProductService {
         try {
             payloadString = IOUtils.toString(request.getReader());
         } catch (Exception e) {
-            response.getWriter().write(new Gson().toJson(e));
+            response.getWriter().write(new Gson().toJson(e.getMessage()));
         }
         Product product;
         try {
             product = new Gson().fromJson(payloadString, Product.class);
             productDao.update(product);
+            response.getWriter().write(new Gson().toJson(new ResponseJSON(200, "Product successfully updated")));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            response.getWriter().write(new Gson().toJson(e.getMessage()));
         }
     }
 }

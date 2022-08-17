@@ -1,6 +1,6 @@
 package com.adobe.aem.avaliacao.core.servlets;
 
-import com.adobe.aem.avaliacao.core.service.ReportService;
+import com.adobe.aem.avaliacao.core.service.AuthenticationService;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
@@ -17,19 +17,19 @@ import java.io.IOException;
 import static org.apache.sling.api.servlets.ServletResolverConstants.*;
 
 @Component(immediate = true, service = Servlet.class, property = {
-        SLING_SERVLET_METHODS + "=" + "GET",
-        SLING_SERVLET_PATHS + "=" + "/bin/sistema/report",
+        SLING_SERVLET_METHODS + "=" + "POST",
+        SLING_SERVLET_PATHS + "=" + "/bin/client/login",
         SLING_SERVLET_EXTENSIONS + "=" + "json"
 })
 
-@ServiceDescription("Report servlet")
-public class ReportServlet extends SlingAllMethodsServlet {
+@ServiceDescription("Authentication servlet")
+public class AuthenticationServlet extends SlingAllMethodsServlet {
 
     @Reference
-    private ReportService reportService;
+    private AuthenticationService authenticationService;
 
     @Override
-    protected void doGet(@NotNull SlingHttpServletRequest request, @NotNull SlingHttpServletResponse response) throws ServletException, IOException {
-        reportService.doGet(request, response);
+    protected void doPost(@NotNull SlingHttpServletRequest request, @NotNull SlingHttpServletResponse response) throws ServletException, IOException {
+        authenticationService.doPost(request, response);
     }
 }

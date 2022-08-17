@@ -1,9 +1,7 @@
 package com.adobe.aem.avaliacao.core.dao;
 
-import com.adobe.aem.avaliacao.core.models.Client;
 import com.adobe.aem.avaliacao.core.models.Product;
 import com.adobe.aem.avaliacao.core.service.DatabaseService;
-import com.adobe.aem.avaliacao.core.service.ProductService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -12,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 @Component(immediate = true, service = ProductDao.class)
 public class ProductDaoImpl implements ProductDao {
@@ -21,10 +18,19 @@ public class ProductDaoImpl implements ProductDao {
     private DatabaseService databaseService;
 
     @Override
-    public Collection<Product> readAll() {
+    public ArrayList<Product> readAll(String param) {
         Connection connection = databaseService.getConnection();
         String sql = "SELECT * FROM product";
-        Collection<Product> products = new ArrayList<>();
+        if (param != null) {
+            if (param.equals("category")) {
+                sql += " ORDER BY " + param;
+            } else if (param.equals("price")) {
+                sql += " ORDER BY " + param;
+            } else {
+                sql += " WHERE name LIKE '%" + param + "%'";
+            }
+        }
+        ArrayList<Product> products = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -113,6 +119,20 @@ public class ProductDaoImpl implements ProductDao {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteMany(ArrayList<Integer> productIds) {
+        Connection connection = databaseService.getConnection();
+
+        for (Integer id : productIds) {
+            String sql = "DELETE FROM product WHERE id = " + id;
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                    ps.execute();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }

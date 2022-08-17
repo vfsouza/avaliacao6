@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="avaliacao@localhost" uuid="ff2b9a44-d206-4179-8351-d7a4b7a6dbfe">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/avaliacao</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
     <data-source source="LOCAL" name="avaliacao@localhost [2]" uuid="f9e63ffb-4e12-490f-8cfe-397e3e5529b6">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>

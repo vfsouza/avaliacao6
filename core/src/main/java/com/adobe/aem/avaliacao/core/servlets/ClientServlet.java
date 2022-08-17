@@ -18,7 +18,10 @@ import static org.apache.sling.api.servlets.ServletResolverConstants.*;
 
 @Component(immediate = true, service = Servlet.class, property = {
         SLING_SERVLET_METHODS + "=" + "GET",
-        SLING_SERVLET_PATHS + "=" + "/bin/keepalive/client",
+        SLING_SERVLET_METHODS + "=" + "PUT",
+        SLING_SERVLET_METHODS + "=" + "DELETE",
+        SLING_SERVLET_METHODS + "=" + "POST",
+        SLING_SERVLET_PATHS + "=" + "/bin/sistema/client",
         SLING_SERVLET_EXTENSIONS + "=" + "json"
 })
 
